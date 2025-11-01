@@ -1,0 +1,39 @@
+# 키워드/태그/부정어/상한/자동패턴 설정
+rules:
+  - tags: ["NAC", "DHCP", "조회쿼리"]
+    keywords: ["DHCP", "NL_FLAGS", "NL_AUTHUSER", "vwNODELIST_ALL"]
+  - tags: ["NAC", "DeviceID", "이미지배포"]
+    keywords: ["Device ID", "Node ID", "blockdevid", "고스트 이미지", "이미지 배포"]
+  - tags: ["OS/Ubuntu", "systemctl"]
+    keywords: ["ubuntu", "systemctl", "apt install", "daemon"]
+  - tags: ["Logging/Elasticsearch", "튜닝", "shard"]
+    keywords: ["elasticsearch", "kibana", "logstash", "shard", "index"]
+
+negatives: ["샘플", "테스트용", "임시"]
+limits:
+  max_tags_per_doc: 6
+  prefer_kebab_case: true
+
+auto_patterns:
+  ip: true
+  mac: true
+  port: [443, 9200, 5601]
+  sql: true
+  elastic: true
+  nac_components: true
+
+categories:
+  - name: "Incident_Response"
+    keywords: ["조치 방안", "복구 절차", "원인 분석", "장애", "오류", "에러", "troubleshooting"]
+    notion_category: ["NAC", "장애 대응"]
+  - name: "NAC"
+    keywords: ["NAC", "centerd", "sensor", "policy", "agent", "DHCP", "Device ID", "Node ID"]
+    notion_category: ["NAC", "운영"]
+  - name: "OS_Linux"
+    keywords: ["ubuntu", "우분투", "systemctl", "kernel", "daemon"]
+    notion_category: ["운영체제", "Ubuntu"]
+  - name: "Logging_ES"
+    keywords: ["elasticsearch", "kibana", "logstash", "index", "shard"]
+    notion_category: ["로그분석", "Elasticsearch"]
+
+sensitive_terms: ["베트남법인", "중국법인", "미국법인"]

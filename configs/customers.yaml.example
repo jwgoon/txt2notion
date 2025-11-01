@@ -1,0 +1,9 @@
+customers:
+  - name: "케피코"
+    mask: "케*코"
+    aliases: ["케피코", "Kepico"]
+    default_tags: ["고객/케피코"]
+  - name: "하이닉스"
+    mask: "하*닉*"
+    aliases: ["하이닉스", "SK hynix", "에스케이하이닉스"]
+    default_tags: ["고객/하이닉스"]
