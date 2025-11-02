@@ -1,93 +1,103 @@
-# tagging_rules.yaml (섹션 추출용 신호어)
+# configs/tagging_rules.yaml
+# v0.1.2 draft – rule-based 분류/태깅 고도화
+
+# 1) 섹션 판별 신호어 (정규식 허용, OR 매칭)
 section_signals:
   summary:
-    - "증상"
-    - "현상"
-    - "문제"
-    - "오류"
-    - "에러"
-    - "장애"
-    - "로그"
-    - "발생"
-    - "환경"
-    - "버전"
+    - "(증상|현상|장애|오류|에러|로그|발생|환경|버전)"
+    - "(접속 불가|인증 실패|느려짐|타임아웃)"
+    - "(구성|설정|사양|Topology|구축|배포)"
   root_cause:
-    - "원인"
-    - "근본 원인"
-    - "분석"
-    - "재현"
-    - "because"
-    - "due to"
-    - "정책 충돌"
-    - "세션"
-    - "타임아웃"
-    - "DHCP"
-    - "DNS"
-    - "ARP"
-    - "TTL"
+    - "(원인|근본 원인|분석|재현)"
+    - "(policy|정책|세션|timeout|drop|deny|blocked|misconfig)"
+    - "(DNS|DHCP|ARP|MTU|VLAN|NAT|TLS|SSL|cert|CA|CRL|OCSP)"
   actions:
-    - "조치"
-    - "해결"
-    - "수정"
-    - "변경"
-    - "적용"
-    - "재기동"
-    - "재시작"
-    - "명령어"
-    - "쿼리"
-    - "스크립트"
-    - "설정값"
-    - "패치"
+    - "(조치|해결|수정|변경|적용|재기동|재시작|Rollback)"
+    - "(명령어|스크립트|쿼리|설정값|파라미터|튜닝)"
+    - "(systemctl|service|msiexec|mysql|kubectl|helm|curl|openssl)"
   prevention:
-    - "재발 방지"
-    - "SOP"
-    - "모니터링"
-    - "알람"
-    - "운영 기준"
-    - "체크리스트"
-    - "자동화"
-    - "권장값"
-    - "튜닝"
-    - "한계"
-    - "주의"
+    - "(재발 방지|SOP|가이드|운영 기준|정책)"
+    - "(모니터링|알람|경보|임계치|threshold|watchdog)"
+    - "(점검 주기|백업|DR|이중화|테스트 시나리오)"
 
-# 키워드/태그/부정어/상한/자동패턴 설정
+# 빈 섹션 제거 최소 글자수
+min_section_len: 20
 
-rules:
-  - tags: ["NAC", "DHCP", "조회쿼리"]
-    keywords: ["DHCP", "NL_FLAGS", "NL_AUTHUSER", "vwNODELIST_ALL"]
-  - tags: ["NAC", "DeviceID", "이미지배포"]
-    keywords: ["Device ID", "Node ID", "blockdevid", "고스트 이미지", "이미지 배포"]
-  - tags: ["OS/Ubuntu", "systemctl"]
-    keywords: ["ubuntu", "systemctl", "apt install", "daemon"]
-  - tags: ["Logging/Elasticsearch", "튜닝", "shard"]
-    keywords: ["elasticsearch", "kibana", "logstash", "shard", "index"]
-
-negatives: ["샘플", "테스트용", "임시"]
-limits:
-  max_tags_per_doc: 6
-  prefer_kebab_case: true
-
-auto_patterns:
-  ip: true
-  mac: true
-  port: [443, 9200, 5601]
-  sql: true
-  elastic: true
-  nac_components: true
-
+# 2) 카테고리(대분류) – 파일명/본문 정규식 매칭
 categories:
-  - name: "Incident_Response"
-    keywords: ["조치 방안", "복구 절차", "원인 분석", "장애", "오류", "에러", "troubleshooting"]
-    notion_category: ["NAC", "장애 대응"]
-  - name: "NAC"
-    keywords: ["NAC", "centerd", "sensor", "policy", "agent", "DHCP", "Device ID", "Node ID"]
-    notion_category: ["NAC", "운영"]
-  - name: "OS_Linux"
-    keywords: ["ubuntu", "우분투", "systemctl", "kernel", "daemon"]
-    notion_category: ["운영체제", "Ubuntu"]
-  - name: "Logging_ES"
-    keywords: ["elasticsearch", "kibana", "logstash", "index", "shard"]
-    notion_category: ["로그분석", "Elasticsearch"]
+  - "NAC"
+  - "EDR"
+  - "ZTNA"
+  - "Network"
+  - "Ubuntu"
+  - "Linux"
+  - "Windows"
+  - "VM"
+  - "Elasticsearch"
+  - "Database"
+  - "Cloud"
+  - "Security"
+  - "SRE|Ops|운영"
 
-sensitive_terms: ["베트남법인", "중국법인", "미국법인"]
+# 3) 태그(소분류) – 매핑 테이블 (왼쪽 키 = 태그명, 오른쪽 = 매칭 키워드 리스트)
+tags:
+  NAC:
+    - "(?i)\\bNAC\\b|지니안|Genian|센서|인증|Policy|Agent|Probe|Passive"
+  EDR:
+    - "(?i)\\bEDR\\b|행위 기반|룰|탐지|IOC|격리"
+  ZTNA:
+    - "(?i)ZTNA|Zero\\s*Trust|Zscaler|Access"
+  Network:
+    - "Switch|Router|Gateway|Firewall|NAT|ARP|VLAN|MTU|L2|L3|L4|L7"
+  Ubuntu:
+    - "(?i)Ubuntu|우분투|apt|systemd|journalctl|netplan"
+  Linux:
+    - "(?i)Linux|CentOS|RHEL|Rocky|kernel|selinux|yum|dnf"
+  Windows:
+    - "(?i)Windows|레지스트리|서비스|이벤트 뷰어|PowerShell"
+  VM:
+    - "VM|가상화|ESXi|vSphere|vCenter|Hyper-V|snapshots?"
+  Elasticsearch:
+    - "(?i)Elasticsearch|Kibana|Logstash|Elastic\\s*Agent|ES\\s*index|Shards?"
+  Database:
+    - "(?i)MySQL|MariaDB|PostgreSQL|MSSQL|쿼리|인덱스|트랜잭션"
+  Cloud:
+    - "(?i)AWS|GCP|Azure|Terraform|IAM|S3|EC2|VPC|CloudTrail"
+  Security:
+    - "(?i)TLS|SSL|인증서|암호화|키 교환|위협|취약점|CVE"
+  Ops:
+    - "(?i)SRE|Ops|운영|관제|지표|APM|가용성|SLA|SLO|SLI"
+
+# 4) 라우팅 규칙(옵션) – 저장 경로 분기 우선순위 (앞에서부터 우선 적용)
+#   ※ main.py는 storage_category를 front matter로만 적고, 실제 디렉토리 라우팅은
+#      사용자가 스크립트 후처리로 선택적으로 적용할 수 있도록 느슨하게 유지.
+routing:
+  - name: "NAC"
+    match: "(?i)NAC|Genian|센서|인증"
+    storage_category: "NAC"
+  - name: "Elasticsearch"
+    match: "(?i)Elasticsearch|Kibana|Logstash"
+    storage_category: "Elasticsearch"
+  - name: "VM"
+    match: "(?i)VM|ESXi|vSphere|vCenter"
+    storage_category: "VM"
+  - name: "Ubuntu"
+    match: "(?i)Ubuntu|우분투"
+    storage_category: "Ubuntu"
+  - name: "Windows"
+    match: "(?i)Windows"
+    storage_category: "Windows"
+  - name: "Network"
+    match: "(?i)Switch|Router|Firewall|VLAN|ARP|MTU"
+    storage_category: "Network"
+  - name: "Security"
+    match: "(?i)TLS|SSL|인증서|암호화|CVE"
+    storage_category: "Security"
+  - name: "Cloud"
+    match: "(?i)AWS|GCP|Azure|Terraform"
+    storage_category: "Cloud"
+
+# 5) 태그/카테고리 최대 개수 제한 (가독성/노션 속성 폭발 방지)
+limits:
+  max_tags: 5
+  max_categories: 3

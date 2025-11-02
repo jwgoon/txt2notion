@@ -1,0 +1,66 @@
+# configs/customers.yaml
+# 고객사명 / 프로젝트명 / 제품명 / 약어 등을 정규식 기반으로 관리
+# - 각 항목은 OR 조건으로 매칭됨 (정규식 허용)
+# - 하드코딩 대신 여기서만 수정하면 main.py가 자동 반영
+
+patterns:
+  # ─────────────────────────────
+  # 🔸 대기업 / 제조사
+  # ─────────────────────────────
+  - "(KEFICO|케피코|Kefico|HKEFICO)"
+  - "(하이닉스|SK[ -]?Hynix|에스케이하이닉스)"
+  - "(현대오토에버|Hyundai AutoEver)"
+  - "(기아|Kia Motors|KIA)"
+  - "(삼성전자|Samsung)"
+  - "(LG전자|LG Innotek|LG화학)"
+  - "(한화|Hanwha)"
+  - "(롯데|Lotte)"
+  - "(두산|Doosan)"
+  - "(포스코|POSCO)"
+
+  # ─────────────────────────────
+  # 🔸 금융 / 공공기관 / 연구소
+  # ─────────────────────────────
+  - "(신한|Shinhan)"
+  - "(국민은행|Kookmin)"
+  - "(농협|NH)"
+  - "(한국전력|한전|KEPCO)"
+  - "(국방|Defense|방위사업청)"
+  - "(행정안전부|행안부|MOIS)"
+  - "(과기정통부|과학기술정보통신부|MSIT)"
+  - "(ETRI|전자통신연구원)"
+
+  # ─────────────────────────────
+  # 🔸 협력사 / 해외 법인 / 특정 프로젝트 코드
+  # ─────────────────────────────
+  - "(베트남|Vietnam|VN)"
+  - "(태국|Thailand|TH)"
+  - "(일본|Japan|JP)"
+  - "(중국|China|CN)"
+  - "(미국|USA|US)"
+  - "(Project ?[A-Z0-9]+|PJ[A-Z0-9]+)"
+  - "(POC|PoC|Proof of Concept)"
+  - "(Pilot|파일럿|테스트베드)"
+
+  # ─────────────────────────────
+  # 🔸 솔루션 / 벤더 / 제품명
+  # ─────────────────────────────
+  - "(Genian|지니안|NAC|EDR|ZTNA)"
+  - "(Zscaler|제로트러스트|ZS)"
+  - "(Fortinet|FortiGate|FGT)"
+  - "(Palo Alto|PA-?|Prisma)"
+  - "(Trend Micro|Deep Security|DS)"
+  - "(Symantec|SEP|DLP)"
+  - "(Cisco|Catalyst|ASA)"
+  - "(VMware|vCenter|ESXi|vSphere)"
+  - "(Elastic|Elasticsearch|Kibana|Logstash)"
+  - "(MySQL|MariaDB|PostgreSQL|MSSQL)"
+  - "(Ubuntu|CentOS|Rocky|RHEL|Linux|Windows)"
+
+# ─────────────────────────────
+# 🔸 마스킹 규칙
+# ─────────────────────────────
+masking:
+  style: partial     # partial | full
+  keep_first: 1      # 앞 문자 몇 개 남길지 (partial 모드일 때)
+  keep_last: 1
